@@ -309,12 +309,16 @@
         </div>
       </div>
 
-      <form id="tgForm">
-        <input type="text" id="name" placeholder="Ваше имя" required>
-        <input type="text" id="contact" placeholder="Telegram / телефон" required>
-        <textarea id="msg" placeholder="Какой сайт нужен? Опишите задачу" required></textarea>
-        <button type="submit" class="btn">Отправить заявку</button>
-      </form>
+     <!-- ФОРМА ОТПРАВКИ НА ПОЧТУ -->
+<form id="myForm" action="https://formspree.io/f/mrpqjdde" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+  <input type="text" name="name" placeholder="Ваше имя" required style="padding: 14px 18px; background: var(--card); border: 1px solid #22222e; border-radius: 12px; color: var(--text); font-size: 1rem; font-family: inherit; outline: none;">
+  
+  <input type="text" name="contact" placeholder="Telegram / телефон" required style="padding: 14px 18px; background: var(--card); border: 1px solid #22222e; border-radius: 12px; color: var(--text); font-size: 1rem; font-family: inherit; outline: none;">
+  
+  <textarea name="message" placeholder="Какой сайт нужен? Опишите задачу" required style="padding: 14px 18px; background: var(--card); border: 1px solid #22222e; border-radius: 12px; color: var(--text); font-size: 1rem; font-family: inherit; outline: none; resize: vertical; min-height: 120px;"></textarea>
+  
+  <button type="submit" class="btn">Отправить заявку</button>
+</form>
 
     </div>
   </div>
@@ -324,44 +328,30 @@
   © 2025 Эрдэни. Сайты, которые работают.
 </footer>
 <script>
-  const BOT_TOKEN = 'ТВОЙ_ТОКЕН_БОТА'; 
-  const CHAT_ID = 'ТВОЙ_CHAT_ID';    
-
-  document.getElementById('tgForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('name').value;
-    const contact = document.getElementById('contact').value;
-    const msg = document.getElementById('msg').value;
-
-    const text = `🔔 Новая заявка с сайта!\n\n👤 Имя: ${name}\n📞 Контакт: ${contact}\n💬 Задача: ${msg}`;
-
+  const form = document.getElementById('myForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Отменяем перезагрузку страницы
+    
+    const data = new FormData(form);
+    
     try {
-      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      // Отправляем данные в Formspree
+      const response = await fetch(form.action, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          chat_id: CHAT_ID, 
-          text: text 
-        })
+        body: data,
+        headers: { 'Accept': 'application/json' }
       });
       
-      const data = await response.json();
-      console.log('Ответ от Telegram:', data);
-
-      if (data.ok) {
+      if (response.ok) {
         alert('Заявка отправлена! Я скоро свяжусь с тобой.');
-        e.target.reset();
+        form.reset(); // Очищаем форму
       } else {
-        alert('Ошибка Telegram: ' + data.description);
+        alert('Ошибка. Напиши напрямую в Telegram: @GGFYVI');
       }
-    } catch (err) {
-      console.error('Ошибка сети:', err);
-      alert('Ошибка отправки. Напиши напрямую в Telegram: @GGFYVI');
+    } catch (error) {
+      alert('Ошибка сети. Напиши в Telegram: @GGFYVI');
     }
   });
 </script>
-
 </body>
 </html>
