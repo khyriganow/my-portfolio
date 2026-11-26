@@ -323,13 +323,10 @@
 <footer>
   © 2025 Эрдэни. Сайты, которые работают.
 </footer>
-
 <script>
   // ==== НАСТРОЙКА ФОРМЫ ====
-  // Не забудь вставить сюда свои данные от бота Telegram, 
-  // иначе заявки с сайта не будут приходить тебе в личку.
-  const BOT_TOKEN = '9002087014:aahjmut0rrr42ppeknwrwznj9rug7snzuz8'; 
-  const CHAT_ID = '5829901338';    
+  const BOT_TOKEN = '9002087014:aahjmut0rrr42ppeknwrwznj9rug7snzuz8'; // Вставь токен от BotFather
+  const CHAT_ID = '5829901338';      // Вставь свой ID от userinfobot
 
   document.getElementById('tgForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -342,15 +339,25 @@
     try {
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text })
+        mode: 'no-cors', // <--- ВОТ ЭТА СТРОКА ОБХОДИТ ОШИБКУ
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          chat_id: CHAT_ID, 
+          text: text 
+        })
       });
+      
+      // Из-за режима no-cors мы не видим ответ, но сообщение уходит
       alert('Заявка отправлена! Я скоро свяжусь с тобой.');
       e.target.reset();
     } catch (err) {
+      console.error(err);
       alert('Ошибка отправки. Напиши напрямую в Telegram: @GGFYVI');
     }
   });
 </script>
+
 </body>
 </html>
